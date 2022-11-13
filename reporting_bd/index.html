@@ -1796,7 +1796,7 @@ fieldset[disabled] .datepicker table tr td span.active.disabled:hover.active {
     })
 </script>
 <!-- Datepicker for js Bootstrap end-->
-    <title>BD ShipsNavo REPORTING ver.7.2a</title>
+    <title>BD ShipsNavo REPORTING ver.7.2b</title>
 
   </head>
 <!-- Background image world start-->
@@ -1874,7 +1874,7 @@ fieldset[disabled] .datepicker table tr td span.active.disabled:hover.active {
                                             <!-- bg-dark deleted -->
 <nav class="navbar navbar-expand-md navbar-dark " aria-label="Fourth navbar example">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">Reporting ver.7.2a</a>
+      <a class="navbar-brand" href="#">Reporting ver.7.2b</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample04" aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -2021,77 +2021,9 @@ Select Signature in Field</label>
        accept="application/x-zip-compressed" />
 </div>
 <!-- input filepond end html -->
-    <script>
-        // Register the plugin with FilePond
-        FilePond.registerPlugin(FilePondPluginFileEncode);
-    FilePond.registerPlugin(FilePondPluginImagePreview);
-        FilePond.registerPlugin(FilePondPluginFileValidateType);
-        FilePond.registerPlugin(FilePondPluginFileValidateSize);
-
-
-        // Get a reference to the file input element
-        const inputElement = document.querySelector('input[type="file"]');
-        // Create the FilePond instance
-        const pond = FilePond.create(inputElement);
-
-        var fileName;
-        var filetype;
-        var base64String;
-        var dataURL;
-        const pondBox = document.querySelector('.filepond--root');
-        pondBox.addEventListener('FilePond:addfile', e => {
-        console.log('file added event', e.detail);
-         fileName = pond.getFile().filename;
-         filetype = pond.getFile().fileType;
-    });
-
-        // Request encoded data
-        pond.onaddfile = (err, item) => {
-
-            if (err) {
-                console.warn(err);
-                return;
-            }
-            
-             dataURL = item.getFileEncodeDataURL();
-
-             base64String = item.getFileEncodeBase64String();
-      
-        }
+       
     
-    $('#gSheet').click(function (event) {
 
-
-                
-              var formData = {
-                                 
-                                filedata: base64String,
-                                filename: fileName,
-                                filetype: filetype, 
-                                
-                            };
-                           
-                            $.ajax({
-                      type: "POST",
-                      url: "https://script.google.com/macros/s/AKfycbyRSv8cKbUEf3WOUCDpeEnXiN2c8FLDBP6bd-mWolRDW4gsKcDeMVdOSLnm5KaL14ie/exec",
-                      data: formData,
-                      dataType: "json",
-                      encode: true,
-                       }).done(function (data
-                        ) {
-                      console.log(data);       
-                    })
-})
-    
-// Google script backEnd below    
-// function doPost(e) {
-//     var datafile = Utilities.base64Decode(e.parameter.filedata)                               //decode data from Base64
-//     var blob2 = Utilities.newBlob(datafile, e.parameter.filetype, e.parameter.filename);                      //create a new blob with decode data, name, type
-//     var folder = DriveApp.getFolderById("1mMux3fH2rAfP-tovDlkfMxgIrsTXKMWo"); //Get folder of destiny for file (final user need access before execution)
-//     var newFile = folder.createFile(blob2);                                   //Create new file (property of final user)
-//     return ContentService.createTextOutput(JSON.stringify(e))
-// }
-    </script>
 
 
  <div class="mb-3">
@@ -2182,6 +2114,44 @@ Select Signature in Field</label>
         var abcde
         var attentionToGmail
         var msgBodyForGmail
+
+       /*filepond post to google script*/
+        var fileName;
+        var filetype;
+        var base64String;
+        var dataURL;
+// Register the plugin with FilePond
+        FilePond.registerPlugin(FilePondPluginFileEncode);
+    FilePond.registerPlugin(FilePondPluginImagePreview);
+        FilePond.registerPlugin(FilePondPluginFileValidateType);
+        FilePond.registerPlugin(FilePondPluginFileValidateSize);
+
+
+        // Get a reference to the file input element
+        const inputElement = document.querySelector('input[type="file"]');
+        // Create the FilePond instance
+        const pond = FilePond.create(inputElement);
+
+        const pondBox = document.querySelector('.filepond--root');
+        pondBox.addEventListener('FilePond:addfile', e => {
+        console.log('file added event', e.detail);
+         fileName = pond.getFile().filename;
+         filetype = pond.getFile().fileType;
+    });
+
+        // Request encoded data
+        pond.onaddfile = (err, item) => {
+
+            if (err) {
+                console.warn(err);
+                return;
+            }
+            
+             dataURL = item.getFileEncodeDataURL();
+
+             base64String = item.getFileEncodeBase64String();
+      
+        }
         /*___________________________________________________________________________________*/
         /*code below triggerd by press button PREVIEW*/
         var modalWindowWithEmailBody = document.getElementById('modalWindowWithEmailBody')
@@ -2363,7 +2333,12 @@ Select Signature in Field</label>
       //inser info in modalWindowWithEmailBody
      document.getElementById('message-text').value=msgBody
      
+  
+     
       $('#gSheet').click(function (event) {
+
+      
+    
 
               var formData = {
                                 /* last version
@@ -2378,7 +2353,10 @@ Select Signature in Field</label>
                                 Corrective: proposedCorrectiveAction,  
                                 Preventive: proposedPreventiveAction,  
                                 Subject: subject,
-                                MessageBody: msgBodyForGmail,  
+                                MessageBody: msgBodyForGmail,
+                                filedata: base64String,
+                                filename: fileName,
+                                filetype: filetype,  
                             };
                 //variables for getting result from gsheet script, success or no and number of the row added
                 var dataMy;

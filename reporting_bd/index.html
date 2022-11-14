@@ -14525,7 +14525,7 @@ fieldset[disabled] .datepicker table tr td span.active.disabled:hover.active {
     })
 </script>
 <!-- Datepicker for js Bootstrap end-->
-    <title>BD ShipsNavo REPORTING ver.7.2d</title>
+    <title>BD ShipsNavo REPORTING ver.7.2e</title>
 
   </head>
 <!-- Background image world start-->
@@ -14603,7 +14603,7 @@ fieldset[disabled] .datepicker table tr td span.active.disabled:hover.active {
                                             <!-- bg-dark deleted -->
 <nav class="navbar navbar-expand-md navbar-dark " aria-label="Fourth navbar example">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">Reporting ver.7.2d</a>
+      <a class="navbar-brand" href="#">Reporting ver.7.2e</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample04" aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -14849,8 +14849,10 @@ Select Signature in Field</label>
         /*filepond post to google script*/
         var fileName;
         var filetype;
+        var fileExte;
         var base64String;
         var dataURL;
+        var filenameformdata;
         /*___________________________________________________________________________________*/
         /*code below triggerd by press button PREVIEW*/
         // Register the plugin with FilePond
@@ -14871,6 +14873,7 @@ Select Signature in Field</label>
         console.log('file added event', e.detail);
          fileName = pond.getFile().filename;
          filetype = pond.getFile().fileType;
+         fileExte = pond.getFile().fileExtension;
     });
 
         // Request encoded data
@@ -14909,6 +14912,7 @@ Select Signature in Field</label>
         var yearOfReport = dateOfIncident.substring(0,4);
         /*Logic related Dates END*/
 
+
         var deficiencyReportNumber = document.getElementById("deficiency_report_number").value;
         var voyageNo = document.getElementById("voyage_no").value;
 
@@ -14935,6 +14939,25 @@ Select Signature in Field</label>
         var selectedDepartment = k.options[k.selectedIndex].text;
         /*Logic related select_department END*/
 
+
+        /*This we will generate string for attachment name start*/
+        const regexfordashes = /-|\s/g;
+
+        // Alternative syntax using RegExp constructor
+        // const regex = new RegExp('-|\\s', 'g')
+
+
+        
+        const strregexfordashes = dateOfIncident;
+        const substregexfordashes = ``;
+
+        // The substituted value will be contained in the result variable
+        const resultregexfordashes = strregexfordashes.replace(regexfordashes, substregexfordashes);
+
+        var strforatt = resultregexfordashes+"-"+typeOfReportShortString+"_"+deficiencyReportNumber+"_imo_"+vesselImoString;
+
+        console.log('Substitution result: ',strforatt );
+        /*This we will generate string for attachment name end*/
 
         //E: [ detailed description of incident: what did happen? ]
         var detailedDescriptionOfIncident = document.getElementById("detailed_description_of_incident").value;
@@ -15088,7 +15111,7 @@ Select Signature in Field</label>
                                 Subject: subject,
                                 MessageBody: msgBodyForGmail,
                                 filedata: base64String,
-                                filename: fileName,
+                                filename: strforatt+"."+fileExte,
                                 filetype: filetype,  
                             };
                 //variables for getting result from gsheet script, success or no and number of the row added

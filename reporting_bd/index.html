@@ -15089,6 +15089,9 @@ Select Signature in Field</label>
       //inser info in modalWindowWithEmailBody
      document.getElementById('message-text').value=msgBody
      
+     $('#modalWindowWithEmailBody').on('shown.bs.modal', function () {
+    $('#recipient-name').focus();
+}) 
   
 
       $('#gSheet').click(function (event) {
